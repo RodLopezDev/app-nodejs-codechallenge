@@ -1,12 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { KAFKA_TOPIC_ANTIFRAUD_VALIDATION } from './common/configs';
+import { TransactionMessageDto } from './dto/transaction.dto';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly service: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @MessagePattern(KAFKA_TOPIC_ANTIFRAUD_VALIDATION)
+  async infoTransaction(@Payload() dto: TransactionMessageDto): Promise<any> {
+    console.log(dto, 'rodrigo');
+    return this.service.validate(dto);
   }
 }
