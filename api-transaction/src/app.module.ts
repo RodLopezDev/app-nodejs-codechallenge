@@ -10,10 +10,11 @@ import {
   KAFKA_INSTANCE_NAME,
   KAFKA_CONSUMER_CLIENTID,
   KAFKA_CONSUMER_GROUP_ID,
-} from './common/config';
+} from './commons/config';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
+import { KafkaService } from './KafkaService';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [KafkaService, AppService],
+  exports: [KafkaService, AppService],
 })
 export class AppModule {}
