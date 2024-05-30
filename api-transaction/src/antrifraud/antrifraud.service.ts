@@ -5,11 +5,11 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   KAFKA_INSTANCE_NAME,
   KAFKA_TOPIC_ANTIFRAUD_VALIDATION,
-} from './commons/config';
-import { TransactionMessage } from './commons/Message';
+} from '../app/config';
+import { TransactionMessage } from './dto/antifruad.dto';
 
 @Injectable()
-export class KafkaService {
+export class AntrifraudService {
   constructor(
     @Inject(KAFKA_INSTANCE_NAME)
     private readonly kafka: ClientKafka,

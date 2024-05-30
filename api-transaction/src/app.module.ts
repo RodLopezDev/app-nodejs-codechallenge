@@ -1,20 +1,9 @@
 import { Logger, Module } from '@nestjs/common';
-import {
-  ClientProvider,
-  ClientsModule,
-  Transport,
-} from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import {
-  KAFKA_INSTANCE_NAME,
-  KAFKA_CONSUMER_CLIENTID,
-  KAFKA_CONSUMER_GROUP_ID,
-} from './commons/config';
-import { AppService } from './app.service';
-import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { KafkaService } from './KafkaService';
+import { AntrifraudModule } from './antrifraud/antrifraud.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -46,31 +35,11 @@ import { KafkaService } from './KafkaService';
         uri: config.get<string>('database.uri'),
       }),
     }),
-    ClientsModule.registerAsync([
-      {
-        name: KAFKA_INSTANCE_NAME,
-        useFactory: (config: ConfigService): ClientProvider => {
-          const host = config.get<string>('kafka.host');
-          const port = config.get<number>('kafka.port');
-          return {
-            transport: Transport.KAFKA,
-            options: {
-              client: {
-                clientId: KAFKA_CONSUMER_CLIENTID,
-                brokers: [`${host}:${port}`],
-              },
-              consumer: {
-                groupId: KAFKA_CONSUMER_GROUP_ID,
-              },
-            },
-          };
-        },
-        inject: [ConfigService],
-      },
-    ]),
+    AntrifraudModule,
+    TransactionModule,
   ],
-  controllers: [AppController],
-  providers: [KafkaService, AppService],
-  exports: [KafkaService, AppService],
+  controllers: [],
+  providers: [],
+  exports: [],
 })
 export class AppModule {}
