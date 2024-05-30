@@ -15,4 +15,8 @@ export class TransactionService {
     const transaction = await this.model.create(dto);
     return transaction;
   }
+
+  async finOne(transactionId: string) {
+    return await this.model.findById(transactionId);
+  }
 }

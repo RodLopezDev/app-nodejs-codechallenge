@@ -3,9 +3,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { TransactionService } from './transaction.service';
 import { TransactionController } from './transaction.controller';
-
-import { AntrifraudModule } from '../antrifraud/antrifraud.module';
 import { Transaction, TransactionSchema } from './entities/transaction.entity';
+
+import { StateModule } from './state/state.module';
+import { AntrifraudModule } from '../antrifraud/antrifraud.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Transaction, TransactionSchema } from './entities/transaction.entity';
       { name: Transaction.name, schema: TransactionSchema },
     ]),
     AntrifraudModule,
+    StateModule,
   ],
   controllers: [TransactionController],
   providers: [TransactionService],

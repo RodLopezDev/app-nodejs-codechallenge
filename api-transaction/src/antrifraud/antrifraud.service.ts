@@ -6,6 +6,7 @@ import {
   KAFKA_INSTANCE_NAME,
   KAFKA_TOPIC_ANTIFRAUD_VALIDATION,
 } from '../app/config';
+import { AntifraudResponse } from './dto/response';
 import { TransactionMessage } from './dto/antifruad.dto';
 
 @Injectable()
@@ -26,7 +27,9 @@ export class AntrifraudService {
     await this.kafka.close();
   }
 
-  async antiFraudValidation(message: TransactionMessage) {
+  async antiFraudValidation(
+    message: TransactionMessage,
+  ): Promise<AntifraudResponse> {
     return firstValueFrom(
       this.kafka.send(
         KAFKA_TOPIC_ANTIFRAUD_VALIDATION,
