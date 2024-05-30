@@ -5,8 +5,10 @@ import { TransactionService } from './transaction.service';
 import { TransactionController } from './transaction.controller';
 import { Transaction, TransactionSchema } from './entities/transaction.entity';
 
-import { StateModule } from './state/state.module';
 import { AntrifraudModule } from '../antrifraud/antrifraud.module';
+
+import { TransferStateModule } from './modules/trasnferstate/transferstate.module';
+import { TransferTypeModule } from './modules/transfertype/transfertype.module';
 
 @Module({
   imports: [
@@ -14,7 +16,8 @@ import { AntrifraudModule } from '../antrifraud/antrifraud.module';
       { name: Transaction.name, schema: TransactionSchema },
     ]),
     AntrifraudModule,
-    StateModule,
+    TransferStateModule,
+    TransferTypeModule,
   ],
   controllers: [TransactionController],
   providers: [TransactionService],

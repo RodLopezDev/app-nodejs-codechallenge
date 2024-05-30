@@ -1,40 +1,63 @@
 import { ApiTags } from '@nestjs/swagger';
 import {
-  Controller,
+  Get,
   Post,
   Body,
-  Get,
   Param,
+  Controller,
   NotFoundException,
 } from '@nestjs/common';
 
-import { StateService } from './state/state.service';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+
 import { TransactionService } from './transaction.service';
 import { AntrifraudService } from '../antrifraud/antrifraud.service';
 
-import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { TransferStateService } from './modules/trasnferstate/transferstate.service';
+import { TransferTypeService } from './modules/transfertype/transfertype.service';
 
 @ApiTags('Transaction')
 @Controller('transaction')
 export class TransactionController {
   constructor(
     private readonly transactionService: TransactionService,
-    private readonly stateService: StateService,
+    private readonly transactiontypeService: TransferTypeService,
+    private readonly stateService: TransferStateService,
     private readonly antrifraudService: AntrifraudService,
   ) {}
 
   @Post()
   async create(@Body() dto: CreateTransactionDto) {
+    const type = this.transactiontypeService.findOne(dto.tranferTypeId);
+    if (!type) {
+      throw new NotFoundException('TransferType');
+    }
+
     const transaction = await this.transactionService.create(dto);
-    await this.stateService.create(transaction.id, 'CREATED');
+    await this.stateService.create(transaction.id, 'pending');
 
     const antifraud = await this.antrifraudService.antiFraudValidation({
       ...dto,
       id: transaction.id,
     });
 
-    await this.stateService.create(transaction.id, antifraud.status);
-    return { ...transaction.toJSON() };
+    const finalStatus = await this.stateService.create(
+      transaction.id,
+      antifraud.status,
+    );
+    const { _id, value, createdAt } = transaction.toJSON();
+
+    return {
+      transactionExternalId: _id,
+      transactionType: {
+        name: type.name,
+      },
+      transactionStatus: {
+        name: finalStatus.state,
+      },
+      value,
+      createdAt,
+    };
   }
 
   @Get(':transactionId')

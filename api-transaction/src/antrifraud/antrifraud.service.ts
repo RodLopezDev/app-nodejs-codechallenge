@@ -6,7 +6,7 @@ import {
   KAFKA_INSTANCE_NAME,
   KAFKA_TOPIC_ANTIFRAUD_VALIDATION,
 } from '../app/config';
-import { AntifraudResponse } from './dto/response';
+import { AntifraudResponse } from './dto/antifraud.response';
 import { TransactionMessage } from './dto/antifruad.dto';
 
 @Injectable()
