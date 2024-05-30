@@ -10,7 +10,6 @@ export class AppController {
 
   @MessagePattern(KAFKA_TOPIC_ANTIFRAUD_VALIDATION)
   async infoTransaction(@Payload() dto: TransactionMessageDto): Promise<any> {
-    console.log(dto, 'rodrigo');
     return this.service.validate(dto);
   }
 }
