@@ -5,7 +5,6 @@ services:
     build: ${APITRANSACTION_SERVICE_PATH}/.
     container_name: api_transaction
     env_file:
-      - ${APITRANSACTION_SERVICE_PATH}/.env
       - .env
     environment:
       - PORT=3000
@@ -25,7 +24,6 @@ services:
     build: ${MSANTIFRAUD_SERVICE_PATH}/.
     container_name: ms_antifraud
     env_file:
-      - ${MSANTIFRAUD_SERVICE_PATH}/.env
       - .env
     environment:
       - KAFKA_HOST=${KAFKA_SERVER_HOST}

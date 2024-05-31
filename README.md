@@ -90,6 +90,6 @@ sequenceDiagram
 # Performance testing
 
 Se dejó un plan de pruebas para Apache JMeter.
-La aplicación fue testeada con 5K peticiones por segundo.
+La aplicación fue testeada con 1K peticiones por segundo por 10 segundos.
 
 [File](./docs/Antifraud.jmx)
