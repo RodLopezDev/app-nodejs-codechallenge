@@ -20,8 +20,29 @@ con un microservicio antifraude mediante kafka, toda información generada se al
 Para levantar la infraestructura completa, ejecutar.
 NOTA: Modificar .env a conveniencia, los valores por defector desplegan un servicio en el puerto 3000.
 
-```
+```bash
 docker-compose up -d
+```
+
+# Ejecución
+
+- El API-Transaction disponibiliza la UI de swagger para ocupar los servicios con facilidad.
+
+![Swagger](./docs/Swagger.png)
+
+- Ejecutar desde la terminal con cURL. 
+
+```bash
+curl -X 'POST' \
+  'http://localhost:3000/transaction' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "accountExternalIdDebit": "12341234",
+  "accountExternalIdCredit": "12341234",
+  "tranferTypeId": 1,
+  "value": 500
+}'
 ```
 
 # Diagrama de Arquitectura
