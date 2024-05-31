@@ -66,25 +66,28 @@ export class TransactionController {
     if (!transaction) {
       throw new NotFoundException('Transaction');
     }
+    const type = this.transactiontypeService.findOne(transaction.tranferTypeId);
+    if (!transaction) {
+      throw new NotFoundException('TransferType');
+    }
 
     const status = await this.stateService.finByTransactionId(transaction.id);
-    const {
-      _id,
-      accountExternalIdCredit,
-      accountExternalIdDebit,
-      tranferTypeId,
-      value,
-    } = transaction.toJSON();
+    const finalStatus = status?.[status.length - 1];
+    if (!finalStatus) {
+      throw new NotFoundException('State');
+    }
+
+    const { _id, createdAt, value } = transaction.toJSON();
     return {
-      id: _id,
-      accountExternalIdCredit,
-      accountExternalIdDebit,
-      tranferTypeId,
+      transactionExternalId: _id,
+      transactionType: {
+        name: type.name,
+      },
+      transactionStatus: {
+        name: finalStatus.state,
+      },
       value,
-      status: status.map((e) => {
-        const { _id, state, createdAt } = e;
-        return { id: _id, state, createdAt };
-      }),
+      createdAt,
     };
   }
 }
