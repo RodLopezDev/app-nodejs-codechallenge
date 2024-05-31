@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { PROFILE, REPOSITORY } from './utils/links';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,7 +24,9 @@ async function bootstrap() {
   /** SWAGGER CONFIGURATION */
   const config = new DocumentBuilder()
     .setTitle('Desafio Yape')
-    .setDescription('Server')
+    .setDescription(
+      `Desarrollado por ${PROFILE}, con NestJS y kafka. ${REPOSITORY}.`,
+    )
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   Get,
   Post,
@@ -9,12 +9,13 @@ import {
 } from '@nestjs/common';
 
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { TransactionResponse } from './response/TransactionResponse';
 
 import { TransactionService } from './transaction.service';
 import { AntrifraudService } from '../antrifraud/antrifraud.service';
 
-import { TransferStateService } from './modules/trasnferstate/transferstate.service';
 import { TransferTypeService } from './modules/transfertype/transfertype.service';
+import { TransferStateService } from './modules/trasnferstate/transferstate.service';
 
 @ApiTags('Transaction')
 @Controller('transaction')
@@ -27,7 +28,14 @@ export class TransactionController {
   ) {}
 
   @Post()
-  async create(@Body() dto: CreateTransactionDto) {
+  @ApiResponse({
+    status: 201,
+    description: 'Transaction has been successfully created.',
+    type: TransactionResponse,
+  })
+  async create(
+    @Body() dto: CreateTransactionDto,
+  ): Promise<TransactionResponse> {
     const type = this.transactiontypeService.findOne(dto.tranferTypeId);
     if (!type) {
       throw new NotFoundException('TransferType');
@@ -48,7 +56,7 @@ export class TransactionController {
     const { _id, value, createdAt } = transaction.toJSON();
 
     return {
-      transactionExternalId: _id,
+      transactionExternalId: `${_id}`,
       transactionType: {
         name: type.name,
       },
@@ -56,12 +64,18 @@ export class TransactionController {
         name: finalStatus.state,
       },
       value,
-      createdAt,
+      createdAt: createdAt.toString(),
     };
   }
 
   @Get(':transactionId')
-  async findOne(@Param('transactionId') transactionId: string) {
+  @ApiResponse({
+    status: 200,
+    type: TransactionResponse,
+  })
+  async findOne(
+    @Param('transactionId') transactionId: string,
+  ): Promise<TransactionResponse> {
     const transaction = await this.transactionService.finOne(transactionId);
     if (!transaction) {
       throw new NotFoundException('Transaction');
@@ -79,7 +93,7 @@ export class TransactionController {
 
     const { _id, createdAt, value } = transaction.toJSON();
     return {
-      transactionExternalId: _id,
+      transactionExternalId: `${_id}`,
       transactionType: {
         name: type.name,
       },
@@ -87,7 +101,7 @@ export class TransactionController {
         name: finalStatus.state,
       },
       value,
-      createdAt,
+      createdAt: createdAt.toString(),
     };
   }
 }
