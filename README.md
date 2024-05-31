@@ -65,3 +65,10 @@ sequenceDiagram
 
     ApiTransaction->>user: Show transaction response
 ```
+
+# Performance testing
+
+Se dejó un plan de pruebas para Apache JMeter.
+La aplicación fue testeada con 5K peticiones por segundo.
+
+[File](./docs/Antifraud.jmx)

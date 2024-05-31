@@ -1,41 +1,41 @@
 version: "3.7"
 
 services:
-  api_transaction:
-    build: ${APITRANSACTION_SERVICE_PATH}/.
-    container_name: ${ECOMMERCE_SERVICE_NAME}
-    env_file:
-      - ${APITRANSACTION_SERVICE_PATH}/.env
-      - .env
-    environment:
-      - PORT=3000
-      - MONGO_URI=${APITRANSACTION_MONGO_URI}
-      - KAFKA_HOST=${KAFKA_HOST}
-      - KAFKA_PORT=${KAFKA_NETWORK_PORT}
-    ports:
-      - ${APITRANSACTION_PORT}:3000
-    networks:
-      - yape_nw
-    depends_on:
-      - mongodb
-      - kafka
-      - kafka_ui
+  # api_transaction:
+  #   build: ${APITRANSACTION_SERVICE_PATH}/.
+  #   container_name: ${ECOMMERCE_SERVICE_NAME}
+  #   env_file:
+  #     - ${APITRANSACTION_SERVICE_PATH}/.env
+  #     - .env
+  #   environment:
+  #     - PORT=3000
+  #     - MONGO_URI=${APITRANSACTION_MONGO_URI}
+  #     - KAFKA_HOST=${KAFKA_HOST}
+  #     - KAFKA_PORT=${KAFKA_NETWORK_PORT}
+  #   ports:
+  #     - ${APITRANSACTION_PORT}:3000
+  #   networks:
+  #     - yape_nw
+  #   depends_on:
+  #     - mongodb
+  #     - kafka
+  #     - kafka_ui
 
-  ms_antifraud:
-    build: ${MSANTIFRAUD_SERVICE_PATH}/.
-    container_name: ${ECOMMERCE_SERVICE_NAME}
-    env_file:
-      - ${MSANTIFRAUD_SERVICE_PATH}/.env
-      - .env
-    environment:
-      - KAFKA_HOST=${KAFKA_HOST}
-      - KAFKA_PORT=${KAFKA_NETWORK_PORT}
-    networks:
-      - yape_nw
-    depends_on:
-      - mongodb
-      - kafka
-      - kafka_ui
+  # ms_antifraud:
+  #   build: ${MSANTIFRAUD_SERVICE_PATH}/.
+  #   container_name: ${ECOMMERCE_SERVICE_NAME}
+  #   env_file:
+  #     - ${MSANTIFRAUD_SERVICE_PATH}/.env
+  #     - .env
+  #   environment:
+  #     - KAFKA_HOST=${KAFKA_HOST}
+  #     - KAFKA_PORT=${KAFKA_NETWORK_PORT}
+  #   networks:
+  #     - yape_nw
+  #   depends_on:
+  #     - mongodb
+  #     - kafka
+  #     - kafka_ui
 
   mongodb:
     image: mongo:8.0.0-rc5
@@ -82,19 +82,23 @@ services:
     networks:
       - yape_nw
     healthcheck:
-      test: ["CMD-SHELL", "kafka-topics --bootstrap-server kafka:${KAFKA_NETWORK_PORT} --list"]
+      test:
+        [
+          "CMD-SHELL",
+          "kafka-topics --bootstrap-server kafka:${KAFKA_NETWORK_PORT} --list",
+        ]
       interval: 5s
       timeout: 3s
       retries: 10
 
   kafka_ui:
-    image: provectuslabs/kafka-ui:latest
+    image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka_ui
     depends_on:
       kafka:
         condition: service_healthy
     ports:
-      - 8080:8080
+      - ${KAFKAUI_PORT}:8080
     environment:
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
       KAFKA_CLUSTERS_0_NAME: local
@@ -107,3 +111,4 @@ volumes:
 
 networks:
   yape_nw:
+    driver: bridge

@@ -31,9 +31,12 @@ import { TransactionModule } from './transaction/transaction.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        uri: config.get<string>('database.uri'),
-      }),
+      useFactory: (config: ConfigService) => {
+        console.log('URL-MONGO', config.get<string>('database.uri'));
+        return {
+          uri: config.get<string>('database.uri'),
+        };
+      },
     }),
     AntrifraudModule,
     TransactionModule,
