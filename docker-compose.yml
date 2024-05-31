@@ -1,41 +1,41 @@
 version: "3.7"
 
 services:
-  # api_transaction:
-  #   build: ${APITRANSACTION_SERVICE_PATH}/.
-  #   container_name: ${ECOMMERCE_SERVICE_NAME}
-  #   env_file:
-  #     - ${APITRANSACTION_SERVICE_PATH}/.env
-  #     - .env
-  #   environment:
-  #     - PORT=3000
-  #     - MONGO_URI=${APITRANSACTION_MONGO_URI}
-  #     - KAFKA_HOST=${KAFKA_HOST}
-  #     - KAFKA_PORT=${KAFKA_NETWORK_PORT}
-  #   ports:
-  #     - ${APITRANSACTION_PORT}:3000
-  #   networks:
-  #     - yape_nw
-  #   depends_on:
-  #     - mongodb
-  #     - kafka
-  #     - kafka_ui
+  api_transaction:
+    build: ${APITRANSACTION_SERVICE_PATH}/.
+    container_name: api_transaction
+    env_file:
+      - ${APITRANSACTION_SERVICE_PATH}/.env
+      - .env
+    environment:
+      - PORT=3000
+      - MONGO_URI=${APITRANSACTION_MONGO_URI}
+      - KAFKA_HOST=${KAFKA_SERVER_HOST}
+      - KAFKA_PORT=${KAFKA_SERVER_NETWORK_PORT}
+    ports:
+      - ${APITRANSACTION_PORT}:3000
+    networks:
+      - yape_nw
+    depends_on:
+      - mongodb
+      - kafka
+      - kafka_ui
 
-  # ms_antifraud:
-  #   build: ${MSANTIFRAUD_SERVICE_PATH}/.
-  #   container_name: ${ECOMMERCE_SERVICE_NAME}
-  #   env_file:
-  #     - ${MSANTIFRAUD_SERVICE_PATH}/.env
-  #     - .env
-  #   environment:
-  #     - KAFKA_HOST=${KAFKA_HOST}
-  #     - KAFKA_PORT=${KAFKA_NETWORK_PORT}
-  #   networks:
-  #     - yape_nw
-  #   depends_on:
-  #     - mongodb
-  #     - kafka
-  #     - kafka_ui
+  ms_antifraud:
+    build: ${MSANTIFRAUD_SERVICE_PATH}/.
+    container_name: ms_antifraud
+    env_file:
+      - ${MSANTIFRAUD_SERVICE_PATH}/.env
+      - .env
+    environment:
+      - KAFKA_HOST=${KAFKA_SERVER_HOST}
+      - KAFKA_PORT=${KAFKA_SERVER_NETWORK_PORT}
+    networks:
+      - yape_nw
+    depends_on:
+      - mongodb
+      - kafka
+      - kafka_ui
 
   mongodb:
     image: mongo:8.0.0-rc5
@@ -71,11 +71,11 @@ services:
       zookeeper:
         condition: service_started
     ports:
-      - ${KAFKA_LOCALHOST_PORT}:29092
+      - ${KAFKA_SERVER_LOCALHOST_PORT}:29092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:${KAFKA_NETWORK_PORT},PLAINTEXT_HOST://localhost:${KAFKA_LOCALHOST_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:${KAFKA_SERVER_NETWORK_PORT},PLAINTEXT_HOST://localhost:${KAFKA_SERVER_LOCALHOST_PORT}
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -85,7 +85,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "kafka-topics --bootstrap-server kafka:${KAFKA_NETWORK_PORT} --list",
+          "kafka-topics --bootstrap-server kafka:${KAFKA_SERVER_NETWORK_PORT} --list",
         ]
       interval: 5s
       timeout: 3s
@@ -102,7 +102,7 @@ services:
     environment:
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:${KAFKA_NETWORK_PORT}
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:${KAFKA_SERVER_NETWORK_PORT}
     networks:
       - yape_nw
 
