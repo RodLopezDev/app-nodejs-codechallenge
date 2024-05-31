@@ -3,6 +3,7 @@
 - [Descripción](#Descripción)
 - [Instalación](#Instalación)
 - [Diagrama de Arquitectura](#Diagrama_de_Arquitectura)
+- [Performance Testing](#Performance_Testing)
 
 # Descripción
 
@@ -45,7 +46,7 @@ curl -X 'POST' \
 }'
 ```
 
-# Diagrama de Arquitectura
+# Diagrama_de_Arquitectura
 
 El software incluye una implementación de un API-Gateway (backend) que se comunica con el microservicio mediante TRANSPORT.KAFKA.
 
@@ -87,7 +88,7 @@ sequenceDiagram
     ApiTransaction->>user: Show transaction response
 ```
 
-# Performance testing
+# Performance_Testing
 
 Se dejó un plan de pruebas para Apache JMeter.
 La aplicación fue testeada con 1K peticiones por segundo por 10 segundos.
